@@ -1,0 +1,19 @@
+.App {
+}
+
+.notelink {
+  display: block;
+  padding: 0px;
+  text-decoration: none;
+  color: #444;
+}
+
+.notelink:visited {
+  color: #444;
+}
+
+.notelink:hover {
+  text-decoration: none;
+  background-color: #DDD;
+  cursor: pointer;
+}
