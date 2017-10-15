@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Grid, Col, Row, PageHeader, Navbar, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Grid, Col, Row, Navbar, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
 import {observer} from 'mobx-react';
 import {Fretboard} from "./components/Fretboard"
 import {Keyboard} from "./components/Keyboard"
@@ -27,7 +27,6 @@ const App = observer(class App extends Component {
   render() {
     return (
       <div className="App">
-        <PageHeader>Guitar Scales Constructor<small></small></PageHeader>
         <Navbar>
           <Nav onSelect={this.handleSelectKeyNote}>
           <NavDropdown eventKey={2} title={"Key Note: " + stateStore.note.displayNameJs()} id="keynote-drop-down">
