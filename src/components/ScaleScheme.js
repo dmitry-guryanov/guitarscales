@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {observer} from 'mobx-react'
+import { Button } from 'react-bootstrap';
 import stateStore from "../stores"
-
+import ScalePlayer from "../models/ScalePlayer"
 const SS_STEP_WIDTH = 40;
 const SS_MARGIN_LEFT = 40;
 
@@ -12,6 +13,7 @@ function _drawLabel(ctx, txt, posx, posy, font, color) {
     ctx.fillText(txt, posx - w * 0.5, posy);
 }
 
+
 export const ScaleScheme = observer(class ScaleScheme extends Component {
   constructor(props) {
     super(props)
@@ -20,6 +22,11 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handlePlayPressed = this.handlePlayPressed.bind(this);
+
+	  this.notes = {}
+
+    this.player = new ScalePlayer(stateStore.scale)
   }
 
   handleInputChange(event) {
@@ -35,6 +42,11 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     this.setState({
       enabledSteps: enabledSteps,
     })
+  }
+
+  handlePlayPressed(event) {
+//    new ScalePlayer(stateStore.scale)
+    this.player.play()
   }
 
   resize = () => this.forceUpdate()
@@ -108,7 +120,7 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
         let j = i % m.notes.length;
 
         checkboxes.push((
-          <input name={`c-${i}`} type="checkbox" style={{position: "absolute", left: posx + "px"}} checked={this.state.enabledSteps[i % m.notes.length]} onChange={this.handleInputChange} />
+          <input key={`c-${i}`} name={`c-${i}`} type="checkbox" style={{position: "absolute", left: posx + "px"}} checked={this.state.enabledSteps[i % m.notes.length]} onChange={this.handleInputChange} />
         ))
         positions.push(posx)
 
@@ -124,6 +136,7 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
       <div>
 	  {checkboxes}
       <br />
+	  <Button onClick={this.handlePlayPressed}>play</Button>
       </div>
       </div>
     )

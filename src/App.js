@@ -33,10 +33,10 @@ const App = observer(class App extends Component {
           <Grid fluid={true}>
           {
             notesTable.map((nr) =>
-              (<Row>
+              (<Row key={nr}>
               {
                 nr.map((n) =>
-                  <Col style={{"padding-left": "0px", "padding-right": "0px"}} xs={4} md={4}><a className='notelink' onClick={() => this.handleSelectKeyNote(n)}>{n.displayNameJs()}</a></Col>
+                  <Col key={n} style={{paddingLeft: "0px", paddingRight: "0px"}} xs={4} md={4}><a className='notelink' onClick={() => this.handleSelectKeyNote(n)}>{n.displayNameJs()}</a></Col>
                 )
               }
               </Row>)
@@ -49,7 +49,7 @@ const App = observer(class App extends Component {
           <NavDropdown eventKey={3} title={stateStore.scaleType.name} id="scale-drop-down">
           {
             scaleTypeIds.map((id) =>
-              <MenuItem eventKey={id}>{scaleTypes[id].name}</MenuItem>
+              <MenuItem key={id} eventKey={id}>{scaleTypes[id].name}</MenuItem>
             )
           }
           </NavDropdown>
@@ -58,7 +58,7 @@ const App = observer(class App extends Component {
           <NavDropdown eventKey={3} title={stateStore.tuning.name} id="scale-drop-down">
           {
             tuningIds.map((id) =>
-              <MenuItem eventKey={id}>{tunings[id].name}</MenuItem>
+              <MenuItem key={id} eventKey={id}>{tunings[id].name}</MenuItem>
             )
           }
           </NavDropdown>
