@@ -6,8 +6,8 @@ import {Fretboard} from "./components/Fretboard"
 import {Keyboard} from "./components/Keyboard"
 import {ScaleScheme} from "./components/ScaleScheme"
 import stateStore from "./stores"
-import {notesTable} from "./models/Note"
-import {scaleTypes, scaleTypeIds} from "./models/ScaleType"
+import {noteNameJs, notesTable} from "./models/Note"
+import {scaleTypeIds} from "./models/ScaleType"
 import {tunings, tuningIds} from "./models/Tuning"
 
 const App = observer(class App extends Component {
@@ -29,14 +29,14 @@ const App = observer(class App extends Component {
       <div className="App">
         <Navbar>
           <Nav onSelect={this.handleSelectKeyNote}>
-          <NavDropdown eventKey={2} title={"Key Note: " + stateStore.note.displayNameJs()} id="keynote-drop-down">
+          <NavDropdown eventKey={2} title={"Key Note: " + noteNameJs(stateStore.note)} id="keynote-drop-down">
           <Grid fluid={true}>
           {
             notesTable.map((nr) =>
               (<Row key={nr}>
               {
                 nr.map((n) =>
-                  <Col key={n} style={{paddingLeft: "0px", paddingRight: "0px"}} xs={4} md={4}><a className='notelink' onClick={() => this.handleSelectKeyNote(n)}>{n.displayNameJs()}</a></Col>
+                  <Col key={n} style={{paddingLeft: "0px", paddingRight: "0px"}} xs={4} md={4}><a className='notelink' onClick={() => this.handleSelectKeyNote(n)}>{noteNameJs(n)}</a></Col>
                 )
               }
               </Row>)
@@ -46,10 +46,10 @@ const App = observer(class App extends Component {
           </NavDropdown>
           </Nav>
           <Nav onSelect={this.handleSelectScale}>
-          <NavDropdown eventKey={3} title={stateStore.scaleType.name} id="scale-drop-down">
+          <NavDropdown eventKey={3} title={stateStore.scaleType} id="scale-drop-down">
           {
             scaleTypeIds.map((id) =>
-              <MenuItem key={id} eventKey={id}>{scaleTypes[id].name}</MenuItem>
+              <MenuItem key={id} eventKey={id}>{id}</MenuItem>
             )
           }
           </NavDropdown>
@@ -64,9 +64,9 @@ const App = observer(class App extends Component {
           </NavDropdown>
           </Nav>
         </Navbar>
-  <ScaleScheme />
-  <Fretboard />
-  <Keyboard />
+        <ScaleScheme />
+        <Fretboard />
+        <Keyboard />
       </div>
     );
   }

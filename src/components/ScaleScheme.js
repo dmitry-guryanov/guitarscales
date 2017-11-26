@@ -2,7 +2,11 @@ import React, {Component} from 'react'
 import {observer} from 'mobx-react'
 import { Button } from 'react-bootstrap';
 import stateStore from "../stores"
-import ScalePlayer from "../models/ScalePlayer"
+//import ScalePlayer from "../models/ScalePlayer"
+import * as Interval from "tonal-interval"
+import * as Scale from "tonal-scale"
+import {noteNameJs} from "../models/Note"
+
 const SS_STEP_WIDTH = 40;
 const SS_MARGIN_LEFT = 40;
 
@@ -24,9 +28,7 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handlePlayPressed = this.handlePlayPressed.bind(this);
 
-	  this.notes = {}
-
-    this.player = new ScalePlayer(stateStore.scale)
+//    this.player = new ScalePlayer(stateStore.scale)
   }
 
   handleInputChange(event) {
@@ -35,7 +37,7 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     const name = target.name
 
   	let enabledSteps = this.state.enabledSteps.slice()
-  	enabledSteps[Number.parseInt(name.slice(2), 10) % stateStore.scale.notes.length] = value
+  	enabledSteps[Number.parseInt(name.slice(2), 10) % this.scaleNotes.length] = value
 
     stateStore.setEnabledSteps(enabledSteps)
 
@@ -46,7 +48,7 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
 
   handlePlayPressed(event) {
 //    new ScalePlayer(stateStore.scale)
-    this.player.play()
+//    this.player.play()
   }
 
   resize = () => this.forceUpdate()
@@ -67,24 +69,23 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
   updateCanvas() {
     const ctx = this.refs.canvas.getContext('2d')
     var c = this.refs.canvas
-    var m = stateStore.scale
 
     ctx.fillStyle = "#FFF";
     ctx.fillRect(0, 0, c.width, c.height);
 
     let posx = SS_MARGIN_LEFT;
-    for (let i = 0; i <= m.notes.length; i++) {
-        let j = i % m.notes.length;
-        _drawLabel(ctx, m.notes[j].displayNameJs(), posx, 60, "20px Arial", "#000");
-        _drawLabel(ctx, m.mode_type.stepNames[j], posx, 80, "20px Arial", "#000");
+    for (let i = 0; i <= this.len; i++) {
+        let j = i % this.len;
+        _drawLabel(ctx, noteNameJs(this.scaleNotes[j]), posx, 60, "20px Arial", "#000");
+//        _drawLabel(ctx, m.mode_type.stepNames[j], posx, 80, "20px Arial", "#000");
 
-        posx += SS_STEP_WIDTH * m.mode_type.intervals[j];
+        posx += SS_STEP_WIDTH * this.intervals[j];
     }
 
     posx = SS_MARGIN_LEFT;
     ctx.beginPath();
-    for (let i = 0; i < m.notes.length; i++) {
-        let interval = m.mode_type.intervals[i];
+    for (let i = 0; i < this.len; i++) {
+        let interval = this.intervals[i];
 	let label = ''
         if (interval === 1) {
             label = '\u00BD';
@@ -111,25 +112,36 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
   }
 
   render() {
-    let m = stateStore.scale
     let positions = []
     let checkboxes = []
 
+    this.scaleNotes = Scale.notes(stateStore.scale)
+    this.scaleIntervals = Scale.intervals(stateStore.scale)
+    this.len = this.scaleIntervals.length
+
+    this.intervals = Array(this.len)
+
+    for (let i = 0; i < this.len - 1; i++) {
+      this.intervals[i] = Interval.semitones(this.scaleIntervals[i + 1]) - Interval.semitones(this.scaleIntervals[i])
+    }
+
+    this.intervals[this.len - 1] = 12 - Interval.semitones(this.scaleIntervals[this.len - 1])
+
     let posx = SS_MARGIN_LEFT - 4;
-    for (let i = 0; i <= m.notes.length; i++) {
-        let j = i % m.notes.length;
+    for (let i = 0; i <= this.scaleNotes.length; i++) {
+        let j = i % this.scaleNotes.length
 
         checkboxes.push((
-          <input key={`c-${i}`} name={`c-${i}`} type="checkbox" style={{position: "absolute", left: posx + "px"}} checked={this.state.enabledSteps[i % m.notes.length]} onChange={this.handleInputChange} />
+          <input key={`c-${i}`} name={`c-${i}`} type="checkbox" style={{position: "absolute", left: posx + "px"}} checked={this.state.enabledSteps[j]} onChange={this.handleInputChange} />
         ))
         positions.push(posx)
 
-        posx += SS_STEP_WIDTH * m.mode_type.intervals[j];
+        posx += SS_STEP_WIDTH * this.intervals[j];
     }
 
     return (
       <div>
-      <div style={{display: "none"}}>fretboard {stateStore.note.displayNameJs()} {stateStore.scaleType.name} {stateStore.scale.length} {stateStore.tuning.name}</div>
+      <div style={{display: "none"}}>fretboard {stateStore.note} {stateStore.scaleType} {stateStore.scale} {stateStore.tuning.name}</div>
       <div>
       <canvas ref="canvas" width={1200} height={80}  style={{border: "0px solid #000000"}}></canvas>
       </div>

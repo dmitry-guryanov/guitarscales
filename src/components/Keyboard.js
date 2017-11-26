@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {observer} from 'mobx-react'
+import * as Note from "tonal-note"
+import * as Scale from "tonal-scale"
 import stateStore from "../stores"
 import {drawNote} from "./utils"
 
@@ -26,7 +28,7 @@ export const Keyboard = observer(class Fretboard extends Component {
   updateCanvas() {
     const ctx = this.refs.canvas.getContext('2d')
     var c = this.refs.canvas
-    var m = stateStore.scale
+    var m = Scale.notes(stateStore.scale)
     c.height = 320;
     var l1 = 250;
     var w1 = 48;
@@ -71,7 +73,7 @@ export const Keyboard = observer(class Fretboard extends Component {
         if (!stateStore.enabledSteps[i])
           continue;
 
-        let s = m.notes[i].semitones;
+        let s = Note.chroma(m[i]);
         let posx = 0
         let posy = 0
 
@@ -83,7 +85,7 @@ export const Keyboard = observer(class Fretboard extends Component {
           posy = 0.8 * l2;
         }
 
-        drawNote(ctx, m.notes[i], posx + shift, posy, 0.7 * w1, 0.7 * w1);
+        drawNote(ctx, m[i], i === 0, posx + shift, posy, 0.7 * w1, 0.7 * w1);
 
       }
     }
@@ -92,7 +94,7 @@ export const Keyboard = observer(class Fretboard extends Component {
   render() {
     return (
       <div>
-      <div style={{display: "none"}}>fretboard {stateStore.note.displayNameJs()} {stateStore.scaleType.name} {stateStore.scale.length} {stateStore.tuning.name} {stateStore.enabledSteps}</div>
+      <div style={{display: "none"}}>fretboard {stateStore.note} {stateStore.scaleType} {stateStore.scale} {stateStore.tuning.name} {stateStore.enabledSteps}</div>
       <div>
       <canvas ref="canvas" width={1200} height={600}  style={{border: "0px solid #000000"}}></canvas>
       </div>

@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {observer} from 'mobx-react'
+import * as Scale from "tonal-scale"
+import * as Distance from "tonal-distance"
 import stateStore from "../stores"
 import {drawNote} from "./utils"
 
@@ -41,7 +43,7 @@ export const Fretboard = observer(class Fretboard extends Component {
   updateCanvas() {
     const ctx = this.refs.canvas.getContext('2d')
     var c = this.refs.canvas
-    var m = stateStore.scale
+    var m = Scale.notes(stateStore.scale)
     c.width = Math.max(Math.min(FRETBOARD_MAX_WIDTH, window.innerWidth),
                FRETBOARD_MIN_WIDTH) - 5;
     var fretsNumber = 24;
@@ -60,6 +62,13 @@ export const Fretboard = observer(class Fretboard extends Component {
     ctx.fillRect(0, 0, c.width, c.height);
     ctx.lineCap="round";
     ctx.translate(FRETBOARD_MARGIN_HORIZ, FRETBOARD_MARGIN_VERT);
+
+    var notesMap = Array(12).fill(null)
+    var stepsMap = Array(12).fill(null)
+    for (let i in m) {
+      notesMap[Distance.semitones("C", m[i])] = m[i]
+      stepsMap[Distance.semitones("C", m[i])] = i
+    }
 
     /* draw lines */
     var frets = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
@@ -116,12 +125,13 @@ export const Fretboard = observer(class Fretboard extends Component {
       for (let j = 0; j <= fretsNumber; j++) {
         let posx;
 
-        let s = (stateStore.tuning.notes[i].semitones + j) % 12;
+        let s = (Distance.semitones("C", stateStore.tuning.notes[i]) + j) % 12
+        console.log(`i=${i}, j=${j}, s=${s}`)
 
-        let note = m.notesMap[s];
-        if (!note)
+        if (notesMap[s] == null)
           continue;
-        if (!stateStore.enabledSteps[note.step])
+
+        if (!stateStore.enabledSteps[stepsMap[s]])
           continue;
 
         posx = (getFretPos(stringLength, j) -
@@ -129,7 +139,8 @@ export const Fretboard = observer(class Fretboard extends Component {
         if (j === 0)
           posx = 0;
 
-        drawNote(ctx, note, posx, i * fretHeight, stepWidth, stepHeight);
+        console.log(`note=${notesMap[s]}`)
+        drawNote(ctx, notesMap[s], notesMap[s] === m[0], posx, i * fretHeight, stepWidth, stepHeight);
       }
     }
   }
@@ -137,7 +148,7 @@ export const Fretboard = observer(class Fretboard extends Component {
   render() {
     return (
       <div>
-      <div style={{display: "none"}}>fretboard {stateStore.note.displayNameJs()} {stateStore.scaleType.name} {stateStore.scale.length} {stateStore.tuning.name}  {stateStore.enabledSteps}</div>
+      <div style={{display: "none"}}>fretboard {stateStore.note} {stateStore.scaleType} {stateStore.scale} {stateStore.tuning.name}  {stateStore.enabledSteps}</div>
       <div>
       <canvas ref="canvas" width={1200} height={600}  style={{border: "0px solid #000000"}}></canvas>
       </div>
