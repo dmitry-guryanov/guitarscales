@@ -9,6 +9,7 @@ class StateStore {
     extendObservable(this, {scale: "C major"})
     extendObservable(this, {tuning: tunings['guitar_std']})
     extendObservable(this, {enabledSteps: Array(12).fill(true)})
+    extendObservable(this, {loaded: false})
   }
 
   setNote = action((note) => {
@@ -31,6 +32,10 @@ class StateStore {
 
   setEnabledSteps = action((enabledSteps) => {
     this.enabledSteps = enabledSteps
+  })
+
+  setLoaded = action((loaded) => {
+    this.loaded = loaded
   })
 }
 

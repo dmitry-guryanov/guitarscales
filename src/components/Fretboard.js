@@ -126,7 +126,6 @@ export const Fretboard = observer(class Fretboard extends Component {
         let posx;
 
         let s = (Distance.semitones("C", stateStore.tuning.notes[i]) + j) % 12
-        console.log(`i=${i}, j=${j}, s=${s}`)
 
         if (notesMap[s] == null)
           continue;
@@ -139,7 +138,6 @@ export const Fretboard = observer(class Fretboard extends Component {
         if (j === 0)
           posx = 0;
 
-        console.log(`note=${notesMap[s]}`)
         drawNote(ctx, notesMap[s], notesMap[s] === m[0], posx, i * fretHeight, stepWidth, stepHeight);
       }
     }

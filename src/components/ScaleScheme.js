@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {observer} from 'mobx-react'
 import { Button } from 'react-bootstrap';
 import stateStore from "../stores"
-//import ScalePlayer from "../models/ScalePlayer"
+import ScalePlayer from "../models/ScalePlayer"
 import * as Interval from "tonal-interval"
 import * as Scale from "tonal-scale"
 import {noteNameJs} from "../models/Note"
@@ -28,7 +28,6 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handlePlayPressed = this.handlePlayPressed.bind(this);
 
-//    this.player = new ScalePlayer(stateStore.scale)
   }
 
   handleInputChange(event) {
@@ -47,8 +46,8 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
   }
 
   handlePlayPressed(event) {
-//    new ScalePlayer(stateStore.scale)
-//    this.player.play()
+    let player = new ScalePlayer(stateStore.scale)
+    player.play()
   }
 
   resize = () => this.forceUpdate()
