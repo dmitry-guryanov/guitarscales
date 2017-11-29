@@ -142,7 +142,7 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
       <div>
       <div style={{display: "none"}}>fretboard {stateStore.note} {stateStore.scaleType} {stateStore.scale} {stateStore.tuning.name}</div>
       <div>
-      <canvas ref="canvas" width={1200} height={80}  style={{border: "0px solid #000000"}}></canvas>
+      <canvas ref="canvas" width={1200} height={60}  style={{border: "0px solid #000000"}}></canvas>
       </div>
       <div>
 	  {checkboxes}
