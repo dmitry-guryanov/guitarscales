@@ -7,23 +7,41 @@ import { soundsStore } from "../stores"
 
 export default class ScalePlayer {
 
-  loadSamples = () => {
+  playNote = (track, note) => {
+    console.log(`play ${track}, ${note}`)
+    let s = this.audioCtx.createBufferSource()
+    s.buffer = soundsStore.samplesData[note]
+    let g = this.audioCtx.createGain()
+    s.connect(g)
+    g.connect(this.audioCtx.destination)
 
-    for (let i = 36; i < 122; i++) {
-          let source = this.audioCtx.createBufferSource()
-          source.buffer = soundsStore.samplesData[i]
-          this.samples[i] = source
-          this.gains[i] = this.audioCtx.createGain()
-          this.samples[i].connect(this.gains[i])
-          this.gains[i].connect(this.audioCtx.destination)
-          console.log(i)
-    }
+    g.gain.value = 1
+    s.start()
+
+    this.samples[track][note] = s
+    this.gains[track][note] = g
+  }
+
+  stopNote = (track, note) => {
+    var timerId
+    timerId = setInterval(() => {
+      if (this.gains[track][note].gain.value > 0) {
+        let newVol = this.gains[track][note].gain.value - 0.02
+        if (newVol < 0)
+          newVol = 0
+        this.gains[track][note].gain.value = newVol
+      } else {
+        this.samples[track][note].stop()
+        this.samples[track][note] = null
+        clearInterval(timerId)
+      }
+    }, 5)
   }
 
   constructor(s) {
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)()
-    this.samples = {}
-    this.gains = {}
+    this.samples = [{}, {}, {}]
+    this.gains = [{}, {}, {}]
 
 
     let tokens = Scale.tokenize(s)
@@ -33,39 +51,35 @@ export default class ScalePlayer {
     this.notes = {}
 
     this.track = new MidiWriter.Track()
+    this.track.setTempo(120)
     this.track.addEvent(new MidiWriter.ProgramChangeEvent({instrument : 1}))
 
     let notes = scale(this.scale).map(transpose(this.key + "3"))
 
     for (let n of notes) {
-      let note = new MidiWriter.NoteEvent({pitch:[n], duration: '4'})
+      let note = new MidiWriter.NoteEvent({pitch:[n], duration: '8'})
       this.track.addEvent(note)
     }
 
+    let track2 = new MidiWriter.Track()
+    track2.setTempo(120)
+    track2.addEvent(new MidiWriter.ProgramChangeEvent({instrument : 1}))
+
+    let note = new MidiWriter.NoteEvent({pitch:[notes[0]], duration: '1'})
+    track2.addEvent(note)
+
     let write = new MidiWriter.Writer([this.track])
+
     this.dataUri = write.dataUri()
 
 
     this.player = new MidiPlayer.Player((event) => {
-      console.log(event)
+      console.log(JSON.stringify(event))
 
       if (event.name === "Note on") {
-          console.log(event.noteNumber)
-          this.gains[event.noteNumber].gain.value = 1
-          this.samples[event.noteNumber].start()
+        this.playNote(event.track, event.noteNumber)
       } else if (event.name === "Note off") {
-        var timerId
-        timerId = setInterval(() => {
-          if (this.gains[event.noteNumber].gain.value > 0) {
-            let newVol = this.gains[event.noteNumber].gain.value - 0.02
-            if (newVol < 0)
-              newVol = 0
-            this.gains[event.noteNumber].gain.value = newVol
-          } else {
-            this.samples[event.noteNumber].stop()
-            clearInterval(timerId)
-          }
-        }, 5)
+        this.stopNote(event.track, event.noteNumber)
       }
     });
 
@@ -73,7 +87,6 @@ export default class ScalePlayer {
   }
 
   play() {
-    this.loadSamples()
     this.player.play()
   }
 }
