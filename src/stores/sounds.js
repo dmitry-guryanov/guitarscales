@@ -10,7 +10,7 @@ class SoundsStore {
 
     for (let i = 36; i < 122; i++) {
       let request = new XMLHttpRequest()
-      request.open('GET', `/sounds/note-${i}.ogg`, true)
+      request.open('GET', `${process.env.PUBLIC_URL}/sounds/note-${i}.ogg`, true)
       request.responseType = 'arraybuffer'
       request.onload = (data) => {
         this.audioCtx.decodeAudioData(data.target.response).then((audioBuffer) => {
