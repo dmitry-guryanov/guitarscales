@@ -5,6 +5,7 @@ import {observer} from 'mobx-react';
 import {Fretboard} from "./components/Fretboard"
 import {Keyboard} from "./components/Keyboard"
 import {ScaleScheme} from "./components/ScaleScheme"
+import * as Scale from "tonal-scale"
 import stateStore from "./stores"
 import {noteNameJs, notesTable} from "./models/Note"
 import {scaleTypeIds} from "./models/ScaleType"
@@ -48,7 +49,7 @@ const App = observer(class App extends Component {
           <Nav onSelect={this.handleSelectScale}>
           <NavDropdown eventKey={3} title={stateStore.scaleType} id="scale-drop-down">
           {
-            scaleTypeIds.map((id) =>
+            Scale.names().map((id) =>
               <MenuItem key={id} eventKey={id}>{id}</MenuItem>
             )
           }
