@@ -2,6 +2,7 @@ import * as MidiWriter from "midi-writer-js"
 import * as MidiPlayer from "midi-player-js"
 //import * as Note from "tonal-note"
 import * as Scale from "tonal-scale"
+import stateStore from "../stores"
 import { transpose, scale } from 'tonal'
 import { soundsStore } from "../stores"
 
@@ -55,9 +56,12 @@ export default class ScalePlayer {
     this.track.addEvent(new MidiWriter.ProgramChangeEvent({instrument : 1}))
 
     let notes = scale(this.scale).map(transpose(this.key + "3"))
+    let notes2 = scale(this.scale).map(transpose(this.key + "2"))
 
-    for (let n of notes) {
-      let note = new MidiWriter.NoteEvent({pitch:[n], duration: '8'})
+    for (let i in notes) {
+      if (!stateStore.enabledSteps[i])
+        continue;
+      let note = new MidiWriter.NoteEvent({pitch:[notes[i]], duration: '8'})
       this.track.addEvent(note)
     }
 
@@ -65,10 +69,10 @@ export default class ScalePlayer {
     track2.setTempo(120)
     track2.addEvent(new MidiWriter.ProgramChangeEvent({instrument : 1}))
 
-    let note = new MidiWriter.NoteEvent({pitch:[notes[0]], duration: '1'})
+    let note = new MidiWriter.NoteEvent({pitch:[notes2[0]], duration: '1'})
     track2.addEvent(note)
 
-    let write = new MidiWriter.Writer([this.track])
+    let write = new MidiWriter.Writer([this.track, track2])
 
     this.dataUri = write.dataUri()
 
