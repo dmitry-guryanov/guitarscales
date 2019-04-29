@@ -43,19 +43,22 @@ export const Fretboard = observer(class Fretboard extends Component {
   updateCanvas() {
     const ctx = this.refs.canvas.getContext('2d')
     var c = this.refs.canvas
+	var devicePixelRatio = window.devicePixelRatio || 1
     var m = Scale.notes(stateStore.scale)
-    c.width = Math.max(Math.min(FRETBOARD_MAX_WIDTH, window.innerWidth),
-               FRETBOARD_MIN_WIDTH) - 5;
+    c.width = (Math.max(Math.min(FRETBOARD_MAX_WIDTH, window.innerWidth),
+               FRETBOARD_MIN_WIDTH) - 5) * devicePixelRatio;
     var fretsNumber = 24;
     var w = c.width - 2 * FRETBOARD_MARGIN_HORIZ;
-    var fretHeight = 24;
+    var fretHeight = 24 * devicePixelRatio;
     var stepWidth = c.width / 50;
     var stepHeight = fretHeight * 0.8;
     var stringLength = w / getFretPos(1.0, fretsNumber);
     var stringsNumber = stateStore.tuning.length;
 
-    c.height = (fretHeight * (stringsNumber - 1) +
-          2 * FRETBOARD_MARGIN_VERT + 10);
+    c.height = ((fretHeight * (stringsNumber - 1) +
+          2 * FRETBOARD_MARGIN_VERT + 10));
+	c.style.width = c.width / devicePixelRatio + "px"
+	c.style.height = c.height / devicePixelRatio + "px"
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = "#FFF";
