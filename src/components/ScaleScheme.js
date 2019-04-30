@@ -7,8 +7,8 @@ import * as Interval from "tonal-interval"
 import * as Scale from "tonal-scale"
 import {noteNameJs} from "../models/Note"
 
-const SS_STEP_WIDTH = 40;
-const SS_MARGIN_LEFT = 40;
+var SS_STEP_WIDTH = 40;
+var SS_MARGIN_LEFT = 40;
 
 function _drawLabel(ctx, txt, posx, posy, font, color) {
     ctx.fillStyle = color;
@@ -28,6 +28,9 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handlePlayPressed = this.handlePlayPressed.bind(this);
 
+    this.devicePixelRatio = window.devicePixelRatio || 1
+    //SS_STEP_WIDTH *= this.devicePixelRatio
+    //SS_MARGIN_LEFT *= this.devicePixelRatio
   }
 
   handleInputChange(event) {
@@ -69,19 +72,21 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     const ctx = this.refs.canvas.getContext('2d')
     var c = this.refs.canvas
 
+    c.style.width = c.width / devicePixelRatio + "px"
+    c.style.height = c.height / devicePixelRatio + "px"
+
     ctx.fillStyle = "#FFF";
     ctx.fillRect(0, 0, c.width, c.height);
 
-    let posx = SS_MARGIN_LEFT;
+    let posx = SS_MARGIN_LEFT * this.devicePixelRatio;
     for (let i = 0; i <= this.len; i++) {
         let j = i % this.len;
-        _drawLabel(ctx, noteNameJs(this.scaleNotes[j]), posx, 60, "20px Arial", "#000");
-//        _drawLabel(ctx, m.mode_type.stepNames[j], posx, 80, "20px Arial", "#000");
+        _drawLabel(ctx, noteNameJs(this.scaleNotes[j]), posx, 60 * this.devicePixelRatio, 20 * this.devicePixelRatio + "px Arial", "#000");
 
-        posx += SS_STEP_WIDTH * this.intervals[j];
+        posx += SS_STEP_WIDTH * this.intervals[j] * this.devicePixelRatio;
     }
 
-    posx = SS_MARGIN_LEFT;
+    posx = SS_MARGIN_LEFT * this.devicePixelRatio;
     ctx.beginPath();
     for (let i = 0; i < this.len; i++) {
         let interval = this.intervals[i];
@@ -96,16 +101,16 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
             label = interval + "/2";
         }
 
-        _drawLabel(ctx, label, posx + interval * SS_STEP_WIDTH / 2, 17,
-                   "14px Arial", "#000");
+        _drawLabel(ctx, label, posx + interval * SS_STEP_WIDTH / 2 * this.devicePixelRatio, 17,
+                   10 * this.devicePixelRatio + "px Arial", "#000");
 
         ctx.strokeStyle = "#999";
-        ctx.moveTo(posx + 3, 40);
-        ctx.lineTo(posx + interval * SS_STEP_WIDTH / 2 - 3, 20);
-        ctx.moveTo(posx + interval * SS_STEP_WIDTH / 2 + 3, 20);
-        ctx.lineTo(posx + interval * SS_STEP_WIDTH - 3, 40);
+        ctx.moveTo(posx + 3 * this.devicePixelRatio, 40 * this.devicePixelRatio);
+      ctx.lineTo(posx + (interval * SS_STEP_WIDTH / 2 - 3) * this.devicePixelRatio, 20 * this.devicePixelRatio);
+      ctx.moveTo(posx + (interval * SS_STEP_WIDTH / 2 + 3) * this.devicePixelRatio, 20 * this.devicePixelRatio);
+      ctx.lineTo(posx + (interval * SS_STEP_WIDTH - 3) * this.devicePixelRatio, 40 * this.devicePixelRatio);
 
-        posx += SS_STEP_WIDTH * interval;
+        posx += SS_STEP_WIDTH * interval * this.devicePixelRatio;
     }
     ctx.stroke();
   }

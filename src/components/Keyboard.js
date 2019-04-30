@@ -26,23 +26,25 @@ export const Keyboard = observer(class Fretboard extends Component {
   }
 
   updateCanvas() {
+    const devicePixelRatio = window.devicePixelRatio || 1
     const ctx = this.refs.canvas.getContext('2d')
     var c = this.refs.canvas
     var m = Scale.notes(stateStore.scale)
-    c.height = 320;
-    var l1 = 250;
-    var w1 = 48;
-    var l2 = 160;
-    var w2 = 28;
+    c.height = 320 * devicePixelRatio;
+    var l1 = 250 * devicePixelRatio;
+    var w1 = 48 * devicePixelRatio;
+    var l2 = 160 * devicePixelRatio;
+    var w2 = 28 * devicePixelRatio;
     var keyTypes = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0];
     var keyShifts = [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6];
+
+    c.style.width = c.width / devicePixelRatio + "px"
+    c.style.height = c.height / devicePixelRatio + "px"
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = "#FFF";
     ctx.fillRect(0, 0, c.width, c.height);
-    ctx.translate(FRETBOARD_MARGIN_HORIZ, FRETBOARD_MARGIN_VERT);
-
-
+    ctx.translate(FRETBOARD_MARGIN_HORIZ * devicePixelRatio, FRETBOARD_MARGIN_VERT * devicePixelRatio);
 
     ctx.lineCap="round";
     ctx.strokeStyle = "#000"
