@@ -11,7 +11,7 @@ const FRETBOARD_MIN_WIDTH = 600
 const FRETBOARD_MAX_WIDTH = 1500
 const FRETBOARD_BASE_COLOR = "#DDD"
 const FRETBOARD_SCALE_FACTOR = 1.3
-const FRETBOARD_LABEL_FONT = "bold 12px Monospace"
+const FRETBOARD_LABEL_FONT = "bold 22px Monospace"
 const FRETBOARD_LABEL_COLOR = "#888"
 const FRETBOARD_DOTS_COLOR = "#444"
 
@@ -48,15 +48,15 @@ export const Fretboard = observer(class Fretboard extends Component {
     c.width = (Math.max(Math.min(FRETBOARD_MAX_WIDTH, window.innerWidth),
                FRETBOARD_MIN_WIDTH) - 5) * devicePixelRatio;
     var fretsNumber = 24;
-    var w = c.width - 2 * FRETBOARD_MARGIN_HORIZ;
+    var w = c.width - 2 * FRETBOARD_MARGIN_HORIZ * devicePixelRatio;
     var fretHeight = 24 * devicePixelRatio;
     var stepWidth = c.width / 50;
     var stepHeight = fretHeight * 0.8;
     var stringLength = w / getFretPos(1.0, fretsNumber);
     var stringsNumber = stateStore.tuning.length;
 
-    c.height = ((fretHeight * (stringsNumber - 1) +
-          2 * FRETBOARD_MARGIN_VERT + 10));
+    c.height = (fretHeight * (stringsNumber - 1) +
+          (2 * FRETBOARD_MARGIN_VERT + 10) * devicePixelRatio);
 	c.style.width = c.width / devicePixelRatio + "px"
 	c.style.height = c.height / devicePixelRatio + "px"
 
@@ -64,7 +64,7 @@ export const Fretboard = observer(class Fretboard extends Component {
     ctx.fillStyle = "#FFF";
     ctx.fillRect(0, 0, c.width, c.height);
     ctx.lineCap="round";
-    ctx.translate(FRETBOARD_MARGIN_HORIZ, FRETBOARD_MARGIN_VERT);
+    ctx.translate(FRETBOARD_MARGIN_HORIZ * devicePixelRatio, FRETBOARD_MARGIN_VERT * devicePixelRatio);
 
     var notesMap = Array(12).fill(null)
     var stepsMap = Array(12).fill(null)

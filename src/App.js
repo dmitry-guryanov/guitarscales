@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Grid, Col, Row, Navbar, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Container, Col, Row, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import {observer} from 'mobx-react';
 import {Fretboard} from "./components/Fretboard"
 import {Keyboard} from "./components/Keyboard"
@@ -8,7 +8,6 @@ import {ScaleScheme} from "./components/ScaleScheme"
 import * as Scale from "tonal-scale"
 import stateStore from "./stores"
 import {noteNameJs, notesTable} from "./models/Note"
-import {scaleTypeIds} from "./models/ScaleType"
 import {tunings, tuningIds} from "./models/Tuning"
 
 const App = observer(class App extends Component {
@@ -28,10 +27,12 @@ const App = observer(class App extends Component {
   render() {
     return (
       <div className="App">
-        <Navbar>
+        <Navbar bg="light" variant="light">
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
           <Nav onSelect={this.handleSelectKeyNote}>
-          <NavDropdown eventKey={2} title={"Key Note: " + noteNameJs(stateStore.note)} id="keynote-drop-down">
-          <Grid fluid={true}>
+          <NavDropdown title={"Key Note: " + noteNameJs(stateStore.note)} id="keynote-drop-down">
+          <Container fluid={true}>
           {
             notesTable.map((nr) =>
               (<Row key={nr}>
@@ -43,28 +44,34 @@ const App = observer(class App extends Component {
               </Row>)
             )
           }
-          </Grid>
+          </Container>
           </NavDropdown>
           </Nav>
           <Nav onSelect={this.handleSelectScale}>
-          <NavDropdown eventKey={3} title={stateStore.scaleType} id="scale-drop-down">
+          <NavDropdown title={stateStore.scaleType} id="scale-drop-down">
           {
             Scale.names().map((id) =>
-              <MenuItem key={id} eventKey={id}>{id}</MenuItem>
+              <NavDropdown.Item>
+                <Nav.Link key={id} eventKey={id}>{id}</Nav.Link>
+              </NavDropdown.Item>
             )
           }
           </NavDropdown>
           </Nav>
           <Nav onSelect={this.handleSelectTuning}>
-          <NavDropdown eventKey={3} title={stateStore.tuning.name} id="scale-drop-down">
+          <NavDropdown title={stateStore.tuning.name} id="scale-drop-down">
           {
-            tuningIds.map((id) =>
-              <MenuItem key={id} eventKey={id}>{tunings[id].name}</MenuItem>
+                tuningIds.map((id) =>
+              <Nav.Item>
+                <Nav.Link key={id} eventKey={id}>{tunings[id].name}</Nav.Link>
+              </Nav.Item>
             )
           }
           </NavDropdown>
           </Nav>
+          </Navbar.Collapse>
         </Navbar>
+        <br />
         <ScaleScheme />
         <Fretboard />
         <Keyboard />

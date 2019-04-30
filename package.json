@@ -4,16 +4,33 @@
   "private": true,
   "homepage": "/scales",
   "dependencies": {
-    "react": "^15.6.1",
-    "react-bootstrap": "^0.31.3",
-    "react-dom": "^15.6.1",
-    "react-scripts": "1.0.13",
-    "tonal": "^1.1.0"
+    "bootstrap": "^4.3.1",
+    "midi-player-js": "^2.0.5",
+    "midi-writer-js": "^1.7.1",
+    "mobx": "^5.9.4",
+    "mobx-react": "^5.4.3",
+    "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.8",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^3.0.0",
+    "tonal": "^2.2.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

@@ -144,16 +144,17 @@ export const ScaleScheme = observer(class ScaleScheme extends Component {
     }
 
     return (
-      <div>
-      <div style={{display: "none"}}>fretboard {stateStore.note} {stateStore.scaleType} {stateStore.scale} {stateStore.tuning.name}</div>
-      <div>
-      <canvas ref="canvas" width={1200} height={60}  style={{border: "0px solid #000000"}}></canvas>
-      </div>
-      <div>
-	  {checkboxes}
-      <br />
-	  <Button onClick={this.handlePlayPressed}>play</Button>
-      </div>
+      <div style={{paddingBottom: 20}}>
+        <div style={{display: "inline-block"}}>
+        <div style={{ display: "none" }}>fretboard {stateStore.note} {stateStore.scaleType} {stateStore.scale} {stateStore.tuning.name}</div>
+        <div>
+          <canvas ref="canvas" width={1200} height={60} style={{ border: "0px solid #000000" }}></canvas>
+        </div>
+        <div>
+          {checkboxes}
+        </div>
+        </div>
+        <Button onClick={this.handlePlayPressed}>play</Button>
       </div>
     )
   }
