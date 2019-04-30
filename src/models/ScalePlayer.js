@@ -56,6 +56,7 @@ export default class ScalePlayer {
     this.track.addEvent(new MidiWriter.ProgramChangeEvent({instrument : 1}))
 
     let notes = scale(this.scale).map(transpose(this.key + "3"))
+	notes.push(this.key + "4")
     let notes2 = scale(this.scale).map(transpose(this.key + "2"))
 
     for (let i in notes) {
