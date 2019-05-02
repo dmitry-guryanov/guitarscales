@@ -31,6 +31,7 @@ export const Keyboard = observer(class Fretboard extends Component {
     var c = this.refs.canvas
     var m = Scale.notes(stateStore.scale)
     c.height = 320 * devicePixelRatio;
+    c.width = (14 * 48 + FRETBOARD_MARGIN_HORIZ * 2) * devicePixelRatio
     var l1 = 250 * devicePixelRatio;
     var w1 = 48 * devicePixelRatio;
     var l2 = 160 * devicePixelRatio;
