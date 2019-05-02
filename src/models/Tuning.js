@@ -11,7 +11,7 @@ export default class Tuning {
 export const tunings = {
     guitar_std: new Tuning("Guitar Standard", ["E", "A", "D", "G", "B", "E"]),
     guitar_dropd: new Tuning("Drop D", ["D", "A", "D", "G", "B", "E"]),
-    guitar_dropcs: new Tuning("Drop C&#x266F;", ["C#", "G#", "C#", "F#", "A#", "D#"]),
+    guitar_dropcs: new Tuning("Drop C#", ["C#", "G#", "C#", "F#", "A#", "D#"]),
     guitar_dropc: new Tuning("Drop C", ["C", "G", "C", "F", "A", "D"]),
     guitar_d: new Tuning("D", ["D", "G", "C", "F", "A", "D"]),
     guitar_7string: new Tuning("7-string standard", ["B", "E", "A", "D", "G", "B", "E"]),
